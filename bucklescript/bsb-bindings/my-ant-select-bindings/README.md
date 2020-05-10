@@ -1,3 +1,14 @@
+# Learning to create a Bucklescript bindings
+
+From [this Youtube video](https://www.youtube.com/watch?v=30J8Yv9eq7c&t=268s)
+
+- npm start
+- npm run server
+
+
+
+The rest is from create-react-app...
+
 # ReasonReact Template & Examples
 
 This is:
