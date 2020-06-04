@@ -1,0 +1,6 @@
+.DS_Store
+
+_build/
+
+# New item. Ignore our dependencies that we can `npm install`
+node_modules/
