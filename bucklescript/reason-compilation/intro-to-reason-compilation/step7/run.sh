@@ -20,9 +20,9 @@ mkdir -p _build/reason-js
 # node_modules is really just another folder filled with files. This produces
 # the right `require` calls in the output. Again, see the BS docs and feel free
 # to fiddle with these options!
-node_modules/bs-platform/bin/bsc.exe -g -bin-annot -pp "refmt --print binary" -bs-package-name self \
-  -bs-package-output commonjs:_build/reason-js -o _build/reason-js/ReasonJs \
-  -c -impl node_modules/reason-js/src/reasonJs.re
+# node_modules/bs-platform/bin/bsc.exe -g -bin-annot -pp "refmt --print binary" -bs-package-name self \
+#   -bs-package-output commonjs:_build/reason-js -o _build/reason-js/ReasonJs \
+#   -c -impl node_modules/reason-js/src/reasonJs.re
 
 # Now build ourselves. Same as previous step.
 mkdir -p _build/self
@@ -47,4 +47,5 @@ done
 # use your current JS module bundler (e.g. Browserify, Webpack)!
 
 # Are you ready to run your JS output?
-node ./_build/self/test.js
+#node ./_build/self/test.js
+node ./_build/self/combinator.js

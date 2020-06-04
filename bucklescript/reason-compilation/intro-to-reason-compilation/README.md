@@ -1,6 +1,9 @@
 stolen from: https://github.com/chenglou/intro-to-reason-compilation/commits?author=chenglou
 also see: https://www.codingame.com/playgrounds/185/introduction-to-reason-compilation/step-1
 
+- https://github.com/facebook/reason/wiki/OCaml-Ecosystem-Extensions-List
+
+
 # Intro to Reason Compilation
 
 [Reason](http://reasonml.github.io/) is a syntax and tooling ecosystem for OCaml. The OCaml's compilation and build system can get rather sophisticated; This repository serves as a tutorial that explains some of the intricacies. It's always nice to know what really happens under the hood!
