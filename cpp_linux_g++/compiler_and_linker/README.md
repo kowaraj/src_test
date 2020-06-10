@@ -1,7 +1,5 @@
 [from here](https://stackoverflow.com/questions/30600978/cpp-usr-bin-ld-cannot-find-lnameofthelibrary)
 
-see also `gist.github.com` for `kowaraj/cpp.md`
-
 # Source code
 
 main.c: 
