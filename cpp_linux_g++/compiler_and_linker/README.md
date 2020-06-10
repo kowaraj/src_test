@@ -171,38 +171,60 @@ Run:
 
 [from here](https://stackoverflow.com/questions/30600978/cpp-usr-bin-ld-cannot-find-lnameofthelibrary)
 
-Libraries, in fact, are just the object files which are placed into a single archive by using ar tool with a single symbols table which is created by ranlib tool.
+Libraries, in fact, are just the object files which are placed into a single archive 
+- by using `ar` tool with a single symbols table which is created by `ranlib` tool.
 
-Compiler, when compiling object files, does not resolve symbols. These symbols will be replaced to addresses by a linker. So resolving symbols can be done by two things: the linker and dynamic loader:
+Compiler, when compiling object files, does not resolve symbols. These symbols will be replaced to addresses by a linker. 
 
-The linker: ld, does 2 jobs:
+So resolving symbols can be done by two things: 
+- the linker and 
+- dynamic loader:
 
-a) For static libs or simple object files, this linker changes external symbols in the object files to the addresses of the real entities. For example, if we use C++ name mangling linker will change _ZNK3MapI10StringName3RefI8GDScriptE10ComparatorIS0_E16DefaultAllocatorE3hasERKS0_ to 0x07f4123f0.
+#### The linker
 
-b) For dynamic libs it only checks if the symbols can be resolved (you try to link with correct library) at all but does not replace the symbols by address. If symbols can't be resolved (for example they are not implemented in the shared library you are linking to) - it throws undefined reference to error and breaks up the building process because you try to use these symbols but linker can't find such symbol in it's object files which it is processing at this time. Otherwise, this linker adds some information to the ELF executable which is:
+`ld`, does 2 jobs:
+1. For static libs or simple object files, this linker changes external symbols in the object files to the addresses of the real entities. For example, if we use C++ name mangling linker will change _ZNK3MapI10StringName3RefI8GDScriptE10ComparatorIS0_E16DefaultAllocatorE3hasERKS0_ to 0x07f4123f0.
 
-i. .interp section - request for an interpreter - dynamic loader to be called before executing, so this section just contains a path to the dynamic loader. If you look at your executable which depends on shared library (libfunc) for example you will see the interp section $ readelf -l a.out:
+2. For dynamic libs it only checks if the symbols can be resolved (you try to link with correct library) at all but does not replace the symbols by address. If symbols can't be resolved (for example they are not implemented in the shared library you are linking to) - it throws undefined reference to error and breaks up the building process because you try to use these symbols but linker can't find such symbol in it's object files which it is processing at this time. Otherwise, this linker adds some information to the ELF executable which is:
 
+2.1 `.interp` section - request for an interpreter 
+  - dynamic loader to be called before executing, so this section just contains a path to the dynamic loader. 
+  
+If you look at your executable which depends on shared library (libfunc) for example 
+you will see the interp section `readelf -l a.out`:
+```
 INTERP         0x0000000000000238 0x0000000000400238 0x0000000000400238
                0x000000000000001c 0x000000000000001c  R      1
 [Requesting program interpreter: /lib64/ld-linux-x86-64.so.2]
-ii. .dynamic section - a list of shared libraries which interpreter will be looking for before executing. You may see them by ldd or readelf:
+```
 
-$ ldd a.out
+2.2 `.dynamic` section - a list of shared libraries which interpreter will be looking for before executing. 
+You may see them by `ldd` or `readelf`.
+
+`ldd a.out`:
+```
      linux-vdso.so.1 =>  (0x00007ffd577dc000)
      libfunc.so.1 => /usr/lib/libfunc.so.1 (0x00007fc629eca000)
      libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fefe148a000)
      /lib64/ld-linux-x86-64.so.2 (0x000055747925e000)
-
-$ readelf -d a.out
-
+```
+`readelf -d a.out`:
+```
   Dynamic section at offset 0xe18 contains 25 entries:
   Tag        Type                         Name/Value
   0x0000000000000001 (NEEDED)             Shared library: [libfunc.so.1]
   0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
-Note that ldd also finds all the libraries in your filesystem while readelf only shows what libraries does your program need. So, all of these libraries will be searched by dynamic loader (next paragraph). The linker works at build time.
+```
 
-Dynamic loader: ld.so or ld-linux. It finds and loads all the shared libraries needed by a program (if they were not loaded before), resolves the symbols by replacing them to real addresses right before the start of the program, prepares the program to run, and then runs it. It works after the build and before running the program. Less speaking, dynamic linking means resolving symbols in your executable before each program start.
+Note that `ldd` also finds all the libraries in your filesystem while `readelf` only shows what libraries does your program need. 
+So, all of these libraries will be searched by dynamic loader (next paragraph). The linker works at build time.
+
+
+#### Dynamic loader
+
+`ld.so` or `ld-linux`
+
+It finds and loads all the shared libraries needed by a program (if they were not loaded before), resolves the symbols by replacing them to real addresses right before the start of the program, prepares the program to run, and then runs it. It works after the build and before running the program. Less speaking, dynamic linking means resolving symbols in your executable before each program start.
 
 Actually, when you run an ELF executable with .interp section (it needs to load some shared libraries) the OS (Linux) runs an interpreter at first but not your program. Otherwise you have an undefined behavior - you have symbols in your program but they are not defined by addresses which usually means that the program will be unable to work properly.
 
