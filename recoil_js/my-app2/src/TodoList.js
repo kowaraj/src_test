@@ -4,6 +4,7 @@ import TodoItemCreator from './TodoItemCreator';
 import TodoListFilters from './TodoListFilter';
 // import { filteredTodoListState } from './TodoListFilter';
 import { filteredTodoListState } from './TodoListFilter';
+import TodoListStats from './TodoListStats';
 
 const todoListState = atom(
     {
@@ -19,7 +20,7 @@ function MyTodoList() {
 
     return (
     <>
-        {/* <TodoListStats /> */}
+        <TodoListStats />
         <TodoListFilters />
         <TodoItemCreator />
 
