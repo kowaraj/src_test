@@ -1,0 +1,1 @@
+An attemptt to make a TodoList app in ReScript without Recoil.js

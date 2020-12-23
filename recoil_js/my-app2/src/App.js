@@ -1,9 +1,12 @@
 import React from 'react';
-import MyApp from './Components';
+import { RecoilRoot } from 'recoil';
+import MyTodoList from './TodoList';
 
 function App() {
   return (
-    <MyApp />
+      <RecoilRoot>
+        <MyTodoList />
+      </RecoilRoot>
   );
 }
 
