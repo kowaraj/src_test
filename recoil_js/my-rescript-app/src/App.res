@@ -1,7 +1,7 @@
 @react.component
 let make = () => {
     <div>
-        <TodoItemCreator2 />
+        <TodoItemCreator />
         <TodoList />
     </div>
 }

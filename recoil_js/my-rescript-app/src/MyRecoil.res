@@ -4,14 +4,15 @@ type todoItemType = {
     isComplete: bool
 };
 
-let todoList : ref<array<todoItemType>> = ref([]);
+let emptyItem = {id: 0, text: "", isComplete: false};
+let todoList : ref<array<todoItemType>> = ref(Belt.Array.make(-1, emptyItem))
 
 let getTodoList = () => {
-    todoList
+    todoList.contents
 }
 
 let addTodoItem = (item) => {
-    let upd : array<todoItemType> = todoList.contents
-    Js.Array2.push(upd, item)
+    let temp = todoList.contents
+    let new_array  = Belt.Array.make(1, item)
+    todoList := Belt.Array.concat(temp, new_array)
 }
-
