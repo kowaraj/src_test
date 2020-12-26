@@ -12,7 +12,10 @@ function TodoList(Props) {
         return "";
       });
   var setInputValue = match[1];
-  var items = Belt_Array.map(MyRecoil$MyRescriptApp.getTodoList(undefined), (function (item) {
+  var match$1 = React.useState(function () {
+        return MyRecoil$MyRescriptApp.emptyTodoList;
+      });
+  var items = Belt_Array.map(match$1[0].contents, (function (item) {
           return React.createElement(TodoItem$MyRescriptApp.make, {
                       item: "asdf"
                     });
