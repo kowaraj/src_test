@@ -2,6 +2,7 @@ import socket
 import sys
 import os
 import time
+import threading 
 
 server_address = './uds_socket'
 
@@ -23,25 +24,29 @@ sock.bind(server_address)
 # Listen for incoming connections
 sock.listen(10)
 
-while True:
-    # Wait for a connection
-    print('waiting for a connection')
-    connection, client_address = sock.accept()
+def worker(socket_for_client):
     try:
+        print('so = {}'.format(socket_for_client))
         print('connection from {}'.format(client_address))
 
         # Receive the data in small chunks and retransmit it
         while True:
-            data = connection.recv(100)
+            data = socket_for_client.recv(100)
             print('received: {}'.format(data))
             if len(data) == 0: 
                 print('no more data, quit')
                 break
-
-
-
             
     finally:
         # Clean up the connection
-        connection.close()
+        print('closing the client socket')
+        socket_for_client.close()
         
+
+
+while True:
+    # Wait for a connection
+    print('waiting for a connection')
+    socket_for_client, client_address = sock.accept()
+    threading.Thread(target=worker, args=([socket_for_client])).start()
+

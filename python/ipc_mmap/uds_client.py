@@ -2,6 +2,7 @@ import socket
 import sys
 import time
 
+timeout = 100
 
 while True:
     # Create a UDS socket
@@ -20,9 +21,13 @@ while True:
         continue
 
     try:
+        print('sleep before sending')
+        time.sleep(timeout)
         message = sys.argv[1] #'aaaaabbbbbcccccddddd'
         print('sending {}'.format(message))
         sock.sendall(message.encode())
     finally:
         print('closing socket')
+        print('sleep before closing')
+        time.sleep(timeout)
         sock.close()
