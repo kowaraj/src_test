@@ -1,4 +1,4 @@
-[this page](https://ocamlverse.github.io/content/quickstart_ocaml_project_dune.html)
+Started with [this tutorial ](https://ocamlverse.github.io/content/quickstart_ocaml_project_dune.html), then added more stuff...
 
 # Quickstart: Step5 - .opam file generated (dune-project + package definition)
 
