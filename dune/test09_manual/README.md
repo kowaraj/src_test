@@ -1,6 +1,8 @@
+# Learning how `dune` works
+
 Started with [this tutorial ](https://ocamlverse.github.io/content/quickstart_ocaml_project_dune.html), then added more stuff...
 
-# Quickstart: Step5 - .opam file generated (dune-project + package definition)
+## Quickstart: Step5 - .opam file generated (dune-project + package definition)
 
 
 from here: [Generating opam files](https://dune.readthedocs.io/en/stable/opam.html#generating-opam-files)
@@ -10,7 +12,7 @@ dune will generate .opam files if the dune-project file
 - declares one or more packages as per, Declaring a package.
 ```
 
-# Quickstart: Step0 - installing local switch + tools
+## Quickstart: Step0 - installing local switch + tools
 
 execute:
 ```
@@ -56,7 +58,7 @@ dune exec:
 
 
 
-# Quickstart: Step4 - .mli interface file
+## Quickstart: Step4 - .mli interface file
 
 ```
 [kapashnin@Andreys-MacBook-Pro: ~/src/test/dune/test09_manual ] dune exec bin/main.exe
@@ -65,9 +67,9 @@ File "mylib/mymath.ml", line 2, characters 4-7:
         ^^^
 Error (warning 32 [unused-value-declaration]): unused value sub.
 ```
-# Quickstart: Step 3 - mylib
+## Quickstart: Step 3 - mylib
 
-# Quickstart: Step 2 - keep it tidy
+## Quickstart: Step 2 - keep it tidy
 
 You might notice that currently, our created files reside at the root of the project directory. In most cases, this is not desirable since the project root is reserved for project metadata such as a readme, change log, license, and other project configurations. To keep things tidy, let’s move the program to a subdirectory. We will name the directory bin, a convention I use as a place to put entry point modules for executables
 
@@ -91,7 +93,7 @@ Entering directory '/Users/kapashnin/src/test/dune/test09_manual'
 Still working as expected. Next up, we’re going to look at putting reusable code as library modules to be used from the executable.
 
 
-# Quickstart: Step 1 - all files reside at the root!
+## Quickstart: Step 1 - all files reside at the root!
 
 
 Notice the `./main.exe` instead of `main.exe` for `exec`:
