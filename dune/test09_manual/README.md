@@ -1,5 +1,15 @@
 [this page](https://ocamlverse.github.io/content/quickstart_ocaml_project_dune.html)
 
+# Quickstart: Step5 - .opam file generated (dune-project + package definition)
+
+
+from here: [Generating opam files](https://dune.readthedocs.io/en/stable/opam.html#generating-opam-files)
+```
+dune will generate .opam files if the dune-project file
+- sets (generate_opam_files true), and
+- declares one or more packages as per, Declaring a package.
+```
+
 # Quickstart: Step0 - installing local switch + tools
 
 execute:

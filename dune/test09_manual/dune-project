@@ -1,0 +1,9 @@
+(lang dune 2.9)
+(name test09_manual_mypackage)
+(generate_opam_files true)
+(package
+ (name test09_manual_mypackage)
+ (synopsis "My first Dune package!")
+ (description "\| This is my first attempt at creating
+              "\| a project with Dune.
+))
