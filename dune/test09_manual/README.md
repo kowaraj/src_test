@@ -1,6 +1,12 @@
+[this page](https://ocamlverse.github.io/content/quickstart_ocaml_project_dune.html)
+
+# Quickstart: Step 2 - keep it tidy
+
+You might notice that currently, our created files reside at the root of the project directory. In most cases, this is not desirable since the project root is reserved for project metadata such as a readme, change log, license, and other project configurations. To keep things tidy, let’s move the program to a subdirectory. We will name the directory bin, a convention I use as a place to put entry point modules for executables
+
+
 # Quickstart: Step 1 - all files reside at the root!
 
-[this page](https://ocamlverse.github.io/content/quickstart_ocaml_project_dune.html)
 
 Notice the `./main.exe` instead of `main.exe` for `exec`:
 ```
