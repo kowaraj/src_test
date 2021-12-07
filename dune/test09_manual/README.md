@@ -1,5 +1,51 @@
 [this page](https://ocamlverse.github.io/content/quickstart_ocaml_project_dune.html)
 
+# Quickstart: Step0 - installing local switch + tools
+
+execute:
+```
+opam switch create . 
+eval $(opam env --switch=. --set-switch)
+opam install merlin ocp-indent dune utop
+```
+
+now we can open `utop` with `dune` as `dune utop .` and the following works fine:
+```
+utop # open Mylib.Mymath;;
+utop # sub 5 6
+```
+
+installed locally:
+```
+[kapashnin@Andreys-MacBook-Pro: ~/src/test/dune/test09_manual ] du -sh ./*
+4.0K	./README.md
+5.6M	./_build
+746M	./_opam
+8.0K	./bin
+4.0K	./dune-project
+12K	./mylib
+```
+
+dune build:
+```
+[kapashnin@Andreys-MacBook-Pro: ~/src/test/dune/test09_manual ] dune build
+```
+
+created binary:
+```
+[kapashnin@Andreys-MacBook-Pro: ~/src/test/dune/test09_manual ] file ./_build/default/bin/main.exe
+./_build/default/bin/main.exe: Mach-O 64-bit executable x86_64
+```
+
+dune exec:
+```
+[kapashnin@Andreys-MacBook-Pro: ~/src/test/dune/test09_manual ] dune exec ./bin/main.exe
+5
+1
+```
+
+
+
 # Quickstart: Step4 - .mli interface file
 
 ```
