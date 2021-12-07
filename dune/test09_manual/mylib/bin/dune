@@ -1,0 +1,3 @@
+(executable
+  (name run_mylib_to_test)
+  (libraries mylib))
