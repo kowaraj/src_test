@@ -1,0 +1,2 @@
+let () = Myppx.Myderiving.test
+

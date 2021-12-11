@@ -1,0 +1,3 @@
+(executable
+  (name run_myppx_to_test)
+  (libraries myppx))
