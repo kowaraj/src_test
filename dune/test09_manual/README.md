@@ -180,3 +180,7 @@ originalstring_extendedstring
 originalstring_extendedstring
 
 ```
+
+## Step6.2 - writing a PPX deriver
+
+not yet: only the files were copied, keep reading [here](https://tarides.com/blog/2019-05-09-an-introduction-to-ocaml-ppx-ecosystem)

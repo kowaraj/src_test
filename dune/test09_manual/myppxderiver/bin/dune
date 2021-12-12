@@ -1,0 +1,4 @@
+(executable
+  (name run_myppxderiver_to_test)
+  (preprocess (pps myppxderiver))
+  (libraries myppxderiver))
