@@ -1,0 +1,4 @@
+(executable
+  (name run_myppxextension_to_test)
+  (preprocess (pps myppxextension))
+  (libraries myppxextension))

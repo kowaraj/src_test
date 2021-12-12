@@ -157,3 +157,26 @@ ocamlfind ppx_tools/dumpast -e "1 + 1"
 To following will pretty print the AST
 - with compiler: `ocamlc/ocamlopt -dparsetree file.ml`
 - with utop: `utop -dparsetree`
+
+## Step6.1 - writing a PPX extension
+```
+opam install ppxlib
+```
+
+The simplest Extension I was able to compile and run! 
+It just adds a hardcoded extension string to the original string...
+
+
+Question: Why it only prints the path on the first run after clean?
+```
+[kapashnin@Andreys-MacBook-Pro: ~/src/test/dune/test09_manual ] dune clean
+
+[kapashnin@Andreys-MacBook-Pro: ~/src/test/dune/test09_manual ] dune exec ./myppxextension/bin/run_myppxextension_to_test.exe
+         ppx myppxextension/bin/run_myppxextension_to_test.pp.ml
+myppxextension/bin/run_myppxextension_to_test.ml
+originalstring_extendedstring
+
+[kapashnin@Andreys-MacBook-Pro: ~/src/test/dune/test09_manual ] dune exec ./myppxextension/bin/run_myppxextension_to_test.exe
+originalstring_extendedstring
+
+```
