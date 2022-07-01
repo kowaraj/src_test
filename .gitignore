@@ -2,3 +2,4 @@ cpp_linux_g++/test/*.o
 cpp_linux_g++/test/*.out
 cpp_linux_g++/test/usr
 *.DS_Store
+node_modules
