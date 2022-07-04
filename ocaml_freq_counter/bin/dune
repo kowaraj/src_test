@@ -1,0 +1,4 @@
+(executable
+ (public_name ocaml_freq_counter)
+ (name main)
+ (libraries base stdio ocaml_freq_counter))
