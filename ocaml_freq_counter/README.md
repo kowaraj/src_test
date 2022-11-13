@@ -1,3 +1,5 @@
+- from [here](https://dev.realworldocaml.org/files-modules-and-programs.html#files-modules-and-programs)
+- and [here](https://dune.readthedocs.io/en/stable/quick-start.html)
 
 
 ```
@@ -24,4 +26,20 @@ drwxr-xr-x   4 kowaraj  staff  128 Jul  4 14:38 test
 
 kowaraj@ams-ap-mbp2 src/kj/src_test/ocaml_freq_counter  % dune exec ./bin/main.exe
 Hello, World!
+```
+
+- run
+
+```
+kowaraj@ams-ap-mbp2 src/kj/src_test/ocaml_freq_counter  % grep -Eo '[[:alpha:]]+' ./bin/main.ml | ./_build/default/bin/main.exe
+  5: line
+  5: List
+  5: counts
+  4: count
+  4: fun
+  4: x
+  4: equal
+  3: let
+  2: f
+  2: l
 ```
