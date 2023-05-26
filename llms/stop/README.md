@@ -12,13 +12,23 @@ NOTE: restart IPython kernel after a package installation
 
 # Jupyter + venv
 
-- create `python -m venv myenv`
-- activate `source myenv/bin/activate`
+Run the `/workspace/script.sh` after a Pod restart: 
 
-- install `pip install --user ipykernel`
-- add `python -m ipykernel install --user --name=myenv`
+```
+#!/bin/bash 
 
+# do once:
+# python -m venv myenv
 
+# activate
+source /workspace/venv/myenv2/bin/activate
+
+# do once: install kernel (the package)
+# pip install --user ipykernel
+
+# run kernel (the module)
+python -m ipykernel install --user --name=myenvKernel
+```
 
 # Links
 

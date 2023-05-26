@@ -8,7 +8,7 @@ NOTE: make sure the env is setup to point to /workspace/.cache instead of /root/
 ```
 
 
-```
+```py
 import torch
 from transformers import LlamaForCausalLM, LlamaTokenizer, GenerationConfig
 device = 'cuda'
@@ -21,4 +21,40 @@ model = LlamaForCausalLM.from_pretrained(
     device_map="auto",
 )
 ```
+
+
+
+
+```py
+prompt = """USER: How much is 4+7?
+ASSISTANT:"""
+
+
+tokenized = tokenizer(prompt, return_tensors="pt")
+print(tokenizer.decode(tokenized['input_ids'][0]))
+
+prompt = """USER: How much is 4+7?
+ASSISTANT:"""
+
+inputs = tokenizer(prompt, return_tensors="pt")
+input_ids = inputs["input_ids"].to(device)
+
+
+generation_config = GenerationConfig( temperature=0, num_beams=1, )
+with torch.no_grad():
+    generation_output = model.generate(
+        input_ids=input_ids,
+        generation_config=generation_config,
+        return_dict_in_generate=True,
+        output_scores=True,
+        max_new_tokens=100,
+    )
+    s = generation_output.sequences[0]
+    output = tokenizer.decode(s)
+
+print(output)
+
+
+```
+
 
