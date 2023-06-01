@@ -5,3 +5,4 @@ cpp_linux_g++/test/usr
 node_modules
 /jupyter/RL_silver/.ipynb_checkpoints/
 /llms/chatgpt/.ipynb_checkpoints/
+/llms/guidance/notebooks/.ipynb_checkpoints/

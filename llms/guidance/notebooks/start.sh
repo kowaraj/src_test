@@ -1,0 +1,2 @@
+source ~/kj/.openai
+
