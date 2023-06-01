@@ -3,3 +3,5 @@ cpp_linux_g++/test/*.out
 cpp_linux_g++/test/usr
 *.DS_Store
 node_modules
+/jupyter/RL_silver/.ipynb_checkpoints/
+/llms/chatgpt/.ipynb_checkpoints/
