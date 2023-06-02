@@ -1,4 +1,14 @@
+# runpod Settings -> Environment Variables
+
+```
+export HUGGINGFACE_HUB_CACHE=/workspace/.cache/huggingface/hub
+export HUGGINGFACE_ASSETS_CACHE=/workspace/.cache/huggingface/assets
+```
+
+
 # Example of a start script for a runPod.net host
+
+NOTE: restart IPython kernel after a package installation
 
 ```sh
 #!/bin/bash 
