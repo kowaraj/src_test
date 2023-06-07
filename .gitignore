@@ -6,3 +6,5 @@ node_modules
 /jupyter/RL_silver/.ipynb_checkpoints/
 /llms/chatgpt/.ipynb_checkpoints/
 /llms/guidance/notebooks/.ipynb_checkpoints/
+/llms/GPTQ/models/__pycache__/
+/llms/GPTQ/notebooks/.ipynb_checkpoints/
