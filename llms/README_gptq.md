@@ -40,5 +40,5 @@ python server.py --listen --listen-port 3000  --wbits 4 --groupsize 128 --model 
 ```
 GIT_LFS_SKIP_SMUDGE=1 git clone https://huggingface.co/TheBloke/guanaco-65B-GPTQ
 wget https://huggingface.co/TheBloke/guanaco-65B-GPTQ/resolve/main/Guanaco-65B-GPTQ-4bit.act-order.safetensors
-python server.py --listen --listen-port 3000  --wbits 4 --groupsize 128 --model alpaca-lora-65B-GPTQ-4bit
+python server.py --listen --listen-port 3000  --wbits 4 --groupsize 128 --model guanaco-65B-GPTQ-4bit
 ```
