@@ -179,13 +179,42 @@ if torch.cuda.is_available():
     device = "cuda"
 elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
     device = "mps"
+device = "cpu"
 print(f"using device: {device}")
 
+
+
+
+
+
+
+# ------------------------------------> training
+import tiktoken
+enc = tiktoken.get_encoding('gpt2')
+print('enc size = ', enc.n_vocab)
+with open('input.txt', 'r') as f:
+    text = f.read()
+text = text[:1000]
+tokens = enc.encode(text)
+B, T = 4, 32
+buf = torch.tensor(tokens[:B*T +1])
+x = buf[:-1].view(B,T)
+y = buf[1:].view(B,T)
+
+model = GPT(GPTConfig()) # the default (random) init
+model.to(device)
+logits = model(x)
+print(logits.shape)
+
+exit(0)
+
+
+# ------------------------------------> generate
 num_return_sequences = 5
 max_length = 30
 
-model = GPT.from_pretrained('gpt2')
-#model = GPT(GPTConfig()) # the default (random) init
+#model = GPT.from_pretrained('gpt2')
+model = GPT(GPTConfig()) # the default (random) init
 model.eval()
 model.to(device)
 
