@@ -97,7 +97,7 @@ class GPT(nn.Module):
 
 
 
-    def forward(self, idx): #, targets=None):
+    def forward(self, idx, targets=None):
         # idx is of shape (B, T)
         B, T = idx.size()
         assert T <= self.config.block_size, f"Cannot forward sequence of length {T}, block size is only {self.config.block_size}"
@@ -112,11 +112,11 @@ class GPT(nn.Module):
         # forward the final layernorm and the classifier
         x = self.transformer.ln_f(x)
         logits = self.lm_head(x) # (B, T, vocab_size)
-        return logits
-        # loss = None
-        # if targets is not None:
-        #     loss = F.cross_entropy(logits.view(-1, logits.size(-1)), targets.view(-1))
-        # return logits, loss
+
+        loss = None
+        if targets is not None:
+            loss = F.cross_entropy(logits.view(-1, logits.size(-1)), targets.view(-1))
+        return logits, loss
 
 
     @classmethod
@@ -179,13 +179,21 @@ if torch.cuda.is_available():
     device = "cuda"
 elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
     device = "mps"
-device = "cpu"
+#device = "cpu"
 print(f"using device: {device}")
 
 
 
+if torch.backends.mps.is_available():
+    print(f"Number of MPS devices: {torch.cuda.device_count()}")
 
+# Check if the current MPS device can be used
+if torch.backends.mps.is_built():
+    print("MPS is built into PyTorch and available for use.")
+else:
+    print("MPS support is not built into this PyTorch installation.")
 
+exit(0)
 
 
 # ------------------------------------> training
@@ -198,13 +206,26 @@ text = text[:1000]
 tokens = enc.encode(text)
 B, T = 4, 32
 buf = torch.tensor(tokens[:B*T +1])
+buf = buf.to(device)
 x = buf[:-1].view(B,T)
 y = buf[1:].view(B,T)
 
 model = GPT(GPTConfig()) # the default (random) init
 model.to(device)
-logits = model(x)
-print(logits.shape)
+
+# instead of:
+# logits,loss = model(x,y)
+# optimize:
+optimizer = torch.optim.AdamW(model.parameters(), lr=3e-4)
+for i in range(50):
+    optimizer.zero_grad()
+    logits, loss = model(x,y) # 1.forward pass
+    loss.backward() # 2. backward pass
+    optimizer.step() # 3. update weights
+    print(f"step {i}, loss: {loss.item()}")
+
+
+print(loss)
 
 exit(0)
 
