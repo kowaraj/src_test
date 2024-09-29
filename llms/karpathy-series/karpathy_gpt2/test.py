@@ -183,21 +183,9 @@ elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
 print(f"using device: {device}")
 
 
-
-if torch.backends.mps.is_available():
-    print(f"Number of MPS devices: {torch.cuda.device_count()}")
-
-# Check if the current MPS device can be used
-if torch.backends.mps.is_built():
-    print("MPS is built into PyTorch and available for use.")
-else:
-    print("MPS support is not built into this PyTorch installation.")
-
-exit(0)
-
-
 # ------------------------------------> training
 import tiktoken
+
 enc = tiktoken.get_encoding('gpt2')
 print('enc size = ', enc.n_vocab)
 with open('input.txt', 'r') as f:
