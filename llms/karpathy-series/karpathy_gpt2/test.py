@@ -3,6 +3,7 @@ from dataclasses import dataclass
 import torch
 import torch.nn as nn
 from torch.nn import functional as F
+import time
 
 class CausalSelfAttention(nn.Module):
 
@@ -13,6 +14,7 @@ class CausalSelfAttention(nn.Module):
         self.c_attn = nn.Linear(config.n_embd, 3 * config.n_embd)
         # output projection
         self.c_proj = nn.Linear(config.n_embd, config.n_embd)
+        self.c_proj.NANOGPT_SCALE_INIT = 1
         # regularization
         self.n_head = config.n_head
         self.n_embd = config.n_embd
@@ -32,10 +34,16 @@ class CausalSelfAttention(nn.Module):
         q = q.view(B, T, self.n_head, C // self.n_head).transpose(1, 2) # (B, nh, T, hs)
         v = v.view(B, T, self.n_head, C // self.n_head).transpose(1, 2) # (B, nh, T, hs)
         # attention (materializes the large (T,T) matrix for all the queries and keys)
-        att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(k.size(-1)))
-        att = att.masked_fill(self.bias[:,:,:T,:T] == 0, float('-inf'))
-        att = F.softmax(att, dim=-1)
-        y = att @ v # (B, nh, T, T) x (B, nh, T, hs) -> (B, nh, T, hs)
+
+        # NOTE: use FlashAttention? 
+        # att = (q @ k.transpose(-2, -1)) * (1.0 / math.sqrt(k.size(-1)))
+        # att = att.masked_fill(self.bias[:,:,:T,:T] == 0, float('-inf'))
+        # att = F.softmax(att, dim=-1)
+        # y = att @ v # (B, nh, T, T) x (B, nh, T, hs) -> (B, nh, T, hs)
+
+        # FAIL: a lot slower ->>> 19seconds of 212 tok/second
+        y = F.scaled_dot_product_attention(q, k, v, is_causal=True)
+
         y = y.transpose(1, 2).contiguous().view(B, T, C) # re-assemble all head outputs side by side
         # output projection
         y = self.c_proj(y)
@@ -71,7 +79,7 @@ class Block(nn.Module):
         return x
 
 
-
+    
 @dataclass
 class GPTConfig:
     block_size: int = 1024 # max sequence length
@@ -95,11 +103,27 @@ class GPT(nn.Module):
         ))
         self.lm_head = nn.Linear(config.n_embd, config.vocab_size, bias=False)
 
+        # weight sharing scheme
+        self.transformer.wte.weight = self.lm_head.weight
 
+        # init params
+        self.apply(self._init_weights)
+
+    def _init_weights(self, module):
+        if isinstance(module, nn.Linear):
+            std = 0.02
+            if hasattr(module, 'NANOGPT_SCALE_INIT'):
+                std *= (2 * self.config.n_layer) ** -0.5
+            torch.nn.init.normal_(module.weight, mean=0.0, std=std)
+            if module.bias is not None:
+                torch.nn.init.zeros_(module.bias)
+        elif isinstance(module, nn.Embedding):
+            torch.nn.init.normal_(module.weight, mean=0.0, std=0.02)
 
     def forward(self, idx, targets=None):
         # idx is of shape (B, T)
         B, T = idx.size()
+        #import code; code.interact(local=locals())
         assert T <= self.config.block_size, f"Cannot forward sequence of length {T}, block size is only {self.config.block_size}"
         # forward the token and posisition embeddings
         pos = torch.arange(0, T, dtype=torch.long, device=idx.device) # shape (T)
@@ -174,13 +198,18 @@ class GPT(nn.Module):
 print("OK")
 
 # attempt to autodetect device
+torch.manual_seed(1337)
 device = "cpu"
 if torch.cuda.is_available():
     device = "cuda"
+    torch.cuda.manual_seed(1337)
 elif hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
     device = "mps"
+    torch.mps.manual_seed(1337)
+
 #device = "cpu"
 print(f"using device: {device}")
+
 
 
 # ------------------------------------> training
@@ -214,21 +243,44 @@ class DataLoaderLite:
 
         return x,y
 
-train_loader = DataLoaderLite(B=4, T=32)
+train_loader = DataLoaderLite(B=4, T=1024)
+
+torch.set_float32_matmul_precision('medium')
 
 model = GPT(GPTConfig()) # the default (random) init
 model.to(device)
+#model = torch.compile(model)
 
-optimizer = torch.optim.AdamW(model.parameters(), lr=3e-4)
+# DONE: as GPT-3
+# optimizer = torch.optim.AdamW(model.parameters(), lr=3e-4)
+optimizer = torch.optim.AdamW(model.parameters(), lr=3e-4, betas=(0.9,0.95), eps=1e-8)
+
+# DONE: learning rate: cos with warmup
 for i in range(50):
+    t0 = time.time()
     x, y = train_loader.next_batch()
     x, y = x.to(device), y.to(device)
 
     optimizer.zero_grad()
+    # mps is unsupported
+    # with torch.autocast(device_type=device, dtype=torch.bfloat16):
+    #     logits, loss = model(x,y) # 1.forward pass
     logits, loss = model(x,y) # 1.forward pass
     loss.backward() # 2. backward pass
+
+    # DONE: clip the grad norm
+    norm = torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+
     optimizer.step() # 3. update weights
-    print(f"step {i}, loss: {loss.item()}")
+
+    # DONE: sync CPU with GPU 
+    torch.mps.synchronize()
+
+    t1 = time.time()
+    dt = (t1 - t0)*1000
+    tokens_per_sec = (train_loader.B * train_loader.T) / (t1 -t0)
+
+    print(f"step {i}, loss: {loss.item():.2f}, dt: {dt:.2f}ms, tok/sec: {tokens_per_sec:.2f}")
 
 
 print(loss.item())
