@@ -5,7 +5,8 @@ import numpy as np
 import random
 
 w, h = 10, 5
-agent = [2, 0]
+start = [2, 0]
+agent = start
 state = 1
 goal = [2, 3]
 
@@ -15,7 +16,7 @@ r = np.zeros((h, w))
 r[goal[0],goal[1]] = 1
 q = np.ones((h, w))
 states = grid
-grid[agent[0], agent[1]] = 0
+grid[agent[0], agent[1]] = 1
 im = ax.imshow(grid, cmap='gray', vmin=0, vmax=1)
 ax.set_xticks([])
 ax.set_yticks([])
@@ -25,9 +26,7 @@ ax_label_y = plt.axes([0.3, 0.05, 0.1, 0.075])
 label_x = widgets.TextBox(ax_label_x, 'X: ', initial=str(agent[1]))
 label_y = widgets.TextBox(ax_label_y, 'Y: ', initial=str(agent[0]))
 
-moves = [(-1,-1), (-1,0), (-1,1),
-             (0,-1), (0,1),
-             (1,-1), (1,0), (1,1)]
+moves = [(-1,-1), (-1,0), (-1,1), (0,-1), (0,1), (1,-1), (1,0), (1,1)]
 
 def policy(s):
     xy = moves[random.randint(1,7)]
@@ -39,23 +38,26 @@ def update_labels():
     label_y.set_val(str(agent[0]))
 
 def update(frame):
+    global state
     global states
-    if state == 0:
-        grid = np.ones((h, w))
-        im.set_array(grid)
-        return [im]
-
-    print('up:', frame)
-    print('grid:', states)
     global agent
+    print('grid:', states)
+    print('agent:', agent)
+    if state == 0:
+        print('agent put on staart')
+        agent = start
+        state = 1
+        return
+
+
     # dy, dx = random.choice(moves)
     dy, dx = policy(agent)
     ny, nx = agent[0] + dy, agent[1] + dx
     if 0 <= ny < h and 0 <= nx < w:
         agent = [ny, nx]
-    if nx = 3 and ny = 2:
+    if nx >= 3:
         print("goal reached, stop!")
-        state == 0
+        state = 0
 
     grid = states.copy()
     grid[agent[0], agent[1]] = 0
@@ -75,17 +77,17 @@ import itertools
 
 
 
-def step(event):
+def step_cb(event):
     print('step')
     update(0)
 
-def start(event):
+def start_cb(event):
     print('start')
     global agent, state
     state = 1
     agent = [h//2, w//2]
 
-def stop(event):
+def stop_cb(event):
     print('stop')
     global agent, state
     state = 0
@@ -93,14 +95,14 @@ def stop(event):
 
 ax_button = plt.axes([0.6, 0.05, 0.1, 0.075])
 button_step = widgets.Button(ax_button, 'Step')
-button_step.on_clicked(step)
+button_step.on_clicked(step_cb)
 
 ax_button = plt.axes([0.7, 0.05, 0.1, 0.075])
 button_start = widgets.Button(ax_button, 'Start')
-button_start.on_clicked(start)
+button_start.on_clicked(start_cb)
 ax_button = plt.axes([0.8, 0.05, 0.1, 0.075])
 button_stop = widgets.Button(ax_button, 'Stop')
-button_stop.on_clicked(stop)
+button_stop.on_clicked(stop_cb)
 
 
 plt.show()
