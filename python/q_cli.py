@@ -27,15 +27,15 @@ np.set_printoptions(precision=4, suppress=True)
 def pick_action_random(s):
     ai = random.randint(0, len(actions)-1)
     dy,dx = actions[ai]
-    print("action = ", dy, dx)
+    print("random action = ", dy, dx)
     ns = s
     ny,nx = (s[0]+dy, s[1]+dx)
     if 0 <= ny < h:
         ns[0] = ny
     if 0 <= nx < w:
         ns[1] = nx
-    print("s       = ", s)
-    print("s_next  = ", ns)
+    print("s             = ", s)
+    print("s_next        = ", ns)
     return (ai, ns) # (action-index, next state) pair
 
 def policy_random(s):
@@ -74,7 +74,7 @@ def policy_greedy(s):
     for ai in range(len(actions)):
         dy,dx = actions[ai]
         print("action = ", dy, dx)
-        ns = s
+        ns = s[:]
         ny,nx = (s[0]+dy, s[1]+dx)
         if 0 <= ny < h:
             ns[0] = ny
@@ -87,16 +87,20 @@ def policy_greedy(s):
         av_max = (av_next, ai, ns) if (av_next > av_max[0]) else av_max
 
     # if no action is better, pick at random
-    if av_max[2] == None:
+    if action == None:
+        print(">>> pick random action")
         ai, ns = pick_action_random(s)
-        reward = r[ai][*s]
         av_next = q[ai][*ns]
     else:
+        print(">>> pick chosen action")
         av_next, ai, ns = av_max
 
     # update Q for the chosen action
+    print("=========================================")
+    print("av_max  = ", av_max)
+    print("ai      = ", ai)
+    reward = r[ai][*s]
     av = q[ai][*s]
-    print("ai  = ", av_max)
 
     q_upd = av + alpha * (reward + gamma * av_next - av)
     print("q_upd   = ", q_upd)
